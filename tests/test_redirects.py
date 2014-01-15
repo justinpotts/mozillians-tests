@@ -33,6 +33,7 @@ class TestRedirects:
 
         Assert.equal(0, len(error_list), error_list)
 
+    @xfail(reason="bug 960302"
     @pytest.mark.nondestructive
     def test_200_for_anonymous_users(self, mozwebqa):
         paths = ['/pl/opensearch.xml', '/nl/u/Mozillians.User/']
