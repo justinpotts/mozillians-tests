@@ -290,13 +290,24 @@ class TestProfile(BaseTest):
         Assert.equal(profile_page.profile_message, "Tu perfil")
         edit_page = profile_page.header.click_edit_profile_menu_item()
         Assert.not_equal(selected_date, edit_page.month + edit_page.year, "The date is not changed")
-    
+        
     @pytest.mark.nondestructive
-    def test_adding_new_group(self, mozwebqa):
+    def test_private_groups_field_as_public_when_logged_in(self, mozwebqa):
         home_page = Home(mozwebqa)
-        home_page.login()
-        edit_page = home_page.go_to_localized_edit_profile_page("en")
-        groups = edit_page.click_find_group_link()
-        create_group = groups.click_create_group_main_button()
-        create_group.create_group_name('qa auto test group')
-  
+        credentials = mozwebqa.credentials['user2']
+        
+        home_page.login('user2')
+        profile_page = home_page.header.click_view_profile_menu_item()
+        profile_page.view_profile_as_anonymous(credentials['name'])
+        
+        Assert.false(profile_page.is_groups_present)
+        
+    @pytest.mark.nondestructive
+    def test_private_groups_field_when_not_logged_in(self, mozwebqa):
+        home_page = Home(mozwebqa)
+        credentials = mozwebqa.credentials['user2']
+        
+        profile_page = home_page.header.search_for(credentials['name'])
+        
+        Assert.false(profile_page.is_groups_present)
+        
