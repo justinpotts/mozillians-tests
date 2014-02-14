@@ -7,7 +7,9 @@
 import time
 import pytest
 from unittestzero import Assert
+from selenium import webdriver
 from pages.home_page import Home
+from pages.page import Page
 from tests.base_test import BaseTest
 
 
@@ -294,20 +296,19 @@ class TestProfile(BaseTest):
     @pytest.mark.nondestructive
     def test_private_groups_field_as_public_when_logged_in(self, mozwebqa):
         home_page = Home(mozwebqa)
-        credentials = mozwebqa.credentials['user2']
+        # User has certain fields preset to values in order to run the test properly
+        credentials = mozwebqa.credentials['user2']                         
         
         home_page.login('user2')
         profile_page = home_page.header.click_view_profile_menu_item()
-        profile_page.view_profile_as_anonymous(credentials['name'])
+        profile_page.view_profile_as_anonymous()
         
         Assert.false(profile_page.is_groups_present)
         
     @pytest.mark.nondestructive
     def test_private_groups_field_when_not_logged_in(self, mozwebqa):
         home_page = Home(mozwebqa)
-        credentials = mozwebqa.credentials['user2']
-        
-        profile_page = home_page.header.search_for(credentials['name'])
+        profile_page = home_page.open_user_profile('e225136')
         
         Assert.false(profile_page.is_groups_present)
         
