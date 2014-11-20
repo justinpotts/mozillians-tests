@@ -178,6 +178,43 @@ class TestProfile(BaseTest):
         Assert.equal('English', profile_page.languages)
         Assert.equal('Mountain View, California, United States', profile_page.location)
 
+    def test_that_email_can_be_updated(self, mozwebqa):
+        user = self.get_new_user()
+        updated_user = self.get_new_user()
+
+        home_page = Home(mozwebqa)
+
+        profile = home_page.create_new_user(user)
+
+        #Set standard profile information
+        profile.set_full_name("New MozilliansUser")
+        profile.set_bio("Hello, I'm new here and trying stuff out. Oh, and by \
+                        the way: I'm a robot, run in a cronjob, most likely")
+        profile.select_language('en')
+        profile.set_location('Mountain View, California')
+        profile.check_privacy()
+
+        profile_page = profile.click_create_profile_button()
+
+        #Check to see the profile is created correctly
+        Assert.true(profile_page.was_account_created_successfully)
+
+        #Change original email to new email address
+        edit_profile_page = home_page.header.click_edit_profile_menu_item()
+        edit_profile_page.set_email(updated_user['email'])
+
+        edit_profile_page.click_update_button_with_new_email()
+
+        v_text = edit_profile_page.email_verification_text
+        expected_text = ('To complete the email change, please use Persona ' +
+                         'to login with your ' + updated_user['email'] +
+                         ' email address.')
+
+        Assert.true(edit_profile_page.is_verify_button_present)
+
+        Assert.equal(v_text, expected_text, 'Displayed: ' + v_text +
+                     ' Expected: ' + expected_text)
+
     @pytest.mark.xfail(reason="Bug 835318 - Error adding groups / skills / or languages with non-latin chars.")
     def test_non_ascii_characters_are_allowed_in_profile_information(self, mozwebqa):
         user = self.get_new_user()
@@ -190,7 +227,6 @@ class TestProfile(BaseTest):
 
         # Skills
         profile.add_skill(u'\u0394\u03D4\u03D5\u03D7\u03C7\u03C9\u03CA\u03E2')
-        profile.add_language(u'\u0394\u03D4\u03D5\u03D7\u03C7\u03C9\u03CA\u03E2')
 
         # Location
         profile.set_location('Athens, Greece')

@@ -20,6 +20,7 @@ class EditProfile(Base):
     _cancel_button_locator = (By.CSS_SELECTOR, 'a.cancel')
     _update_button_locator = (By.ID, 'form-submit')
     _full_name_field_locator = (By.ID, 'id_full_name')
+    _email_address_locator = (By.ID, 'id_email')
     _website_field_locator = (By.ID, 'id_externalaccount_set-0-identifier')
     _bio_field_locator = (By.ID, 'id_bio')
     _groups_field_locator = (By.CSS_SELECTOR, '#id_groups + ul input')
@@ -41,10 +42,21 @@ class EditProfile(Base):
     _find_group_page = (By.PARTIAL_LINK_TEXT, 'find the group')
     _services_bugzilla_locator = (By.ID, 'services-bugzilla-url')
     _services_mozilla_reps_locator = (By.ID, 'services-mozilla-reps')
+    _verify_email_locator = (By.ID, 'verify_email')
+    _email_verification_text = (By.CSS_SELECTOR, '.container p')
 
     def click_update_button(self):
         self.selenium.find_element(*self._update_button_locator).click()
         return Profile(self.testsetup)
+
+    def click_update_button_with_new_email(self):
+        '''Method for updating profile after the email has been updated'''
+        self.selenium.find_element(*self._update_button_locator).click()
+
+    @property
+    def email_verification_text(self):
+        '''Text that confirms an email was sent to verify the change'''
+        return self.selenium.find_element(*self._email_verification_text).text
 
     def click_cancel_button(self):
         self.selenium.find_element(*self._cancel_button_locator).click()
@@ -57,6 +69,11 @@ class EditProfile(Base):
         element = self.selenium.find_element(*self._full_name_field_locator)
         element.clear()
         element.send_keys(full_name)
+
+    def set_email(self, email):
+        element = self.selenium.find_element(*self._email_address_locator)
+        element.clear()
+        element.send_keys(email)
 
     def set_website(self, website):
         element = self.selenium.find_element(*self._website_field_locator)
@@ -155,3 +172,7 @@ class EditProfile(Base):
             urls.append(url)
 
         return urls
+
+    @property
+    def is_verify_button_present(self):
+        return self.is_element_present(*self._verify_email_locator)
