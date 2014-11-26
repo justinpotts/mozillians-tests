@@ -58,20 +58,34 @@ class TestProfile(BaseTest):
         Assert.equal(biography, new_biography)
         Assert.equal(website, new_website)
 
-    @pytest.mark.xfail("'allizom' in config.getvalue('base_url')",
-                       reason="Bug 938184 - Users should not create, join, or leave groups from the profile create/edit screens")
     @pytest.mark.credentials
+    @pytest.mark.nondestructive
     def test_group_addition(self, mozwebqa):
         home_page = Home(mozwebqa)
         home_page.login()
 
-        edit_profile_page = home_page.header.click_edit_profile_menu_item()
-        edit_profile_page.add_group("Hello World")
-        profile_page = edit_profile_page.click_update_button()
+        #Find a group
+        edit_profile = home_page.header.click_edit_profile_menu_item()
+        group_listing_page = edit_profile.click_find_groups()
 
-        Assert.true(profile_page.is_groups_present, "No groups added to profile.")
-        groups = profile_page.groups
-        Assert.greater(groups.find("hello world"), -1, "Group 'Hello World' not added to profile.")
+        #Click the group
+        group_page = group_listing_page.get_random_group()
+
+        #Join group
+        group_page_joined = group_page.join_group()
+
+        #Verify membership
+        Assert.true(group_page_joined.is_a_member,
+                    'User is not a member of the group, but should be.' +
+                    'Tried to join ' + group_page_joined.group_name)
+
+        #Leave group
+        group_page_leave = group_page_joined.leave_group()
+
+        #Verify join button is present
+        Assert.false(group_page.is_a_member,
+                        'User is a member of the group, but should not be.' +
+                        'Tried to leave ' + group_page_leave.group_name)
 
     @pytest.mark.xfail("'allizom' in config.getvalue('base_url')",
                        reason="Bug 938184 - Users should not create, join, or leave groups from the profile create/edit screens")

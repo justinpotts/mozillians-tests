@@ -49,7 +49,7 @@ class EditProfile(Base):
     def click_cancel_button(self):
         self.selenium.find_element(*self._cancel_button_locator).click()
 
-    def click_find_group_link(self):
+    def click_find_groups(self):
         self.selenium.find_element(*self._find_group_page).click()
         return GroupsPage(self.testsetup)
 
@@ -67,11 +67,6 @@ class EditProfile(Base):
         element = self.selenium.find_element(*self._bio_field_locator)
         element.clear()
         element.send_keys(biography)
-
-    def add_group(self, group_name):
-        element = self.selenium.find_element(*self._groups_field_locator)
-        element.send_keys(group_name)
-        element.send_keys(Keys.RETURN)
 
     def add_skill(self, skill_name):
         element = self.selenium.find_element(*self._skills_field_locator)
