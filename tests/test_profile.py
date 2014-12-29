@@ -205,15 +205,15 @@ class TestProfile(BaseTest):
 
         edit_profile_page.click_update_button_with_new_email()
 
-        v_text = edit_profile_page.email_verification_text
+        verification_text = edit_profile_page.email_verification_text
         expected_text = ('To complete the email change, please use Persona ' +
                          'to login with your ' + updated_user['email'] +
                          ' email address.')
 
         Assert.true(edit_profile_page.is_verify_button_present)
 
-        Assert.equal(v_text, expected_text, 'Displayed: ' + v_text +
-                     ' Expected: ' + expected_text)
+        Assert.equal(verification_text, expected_text, 'Displayed: ' +
+                     verification_text + ' Expected: ' + expected_text)
 
     @pytest.mark.xfail(reason="Bug 835318 - Error adding groups / skills / or languages with non-latin chars.")
     def test_non_ascii_characters_are_allowed_in_profile_information(self, mozwebqa):
