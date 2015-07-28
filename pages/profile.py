@@ -30,8 +30,7 @@ class Profile(Base):
     _profile_message_locator = (By.CSS_SELECTOR, '.alert')
     _view_as_locator = (By.ID, 'view-privacy-mode')
 
-    def __init__(self, testsetup):
-        Base.__init__(self, testsetup)
+    def __init__(self):
         WebDriverWait(self.selenium, self.timeout).until(
             lambda s: self.is_element_visible(*self._profile_photo_locator))
 
@@ -87,17 +86,17 @@ class Profile(Base):
     def click_profile_city_filter(self):
         self.find_element(*self._city_locator).click()
         from location_search_results import LocationSearchResults
-        return LocationSearchResults(self.testsetup)
+        return LocationSearchResults(self.base_url, self.selenium)
 
     def click_profile_region_filter(self,):
         self.find_element(*self._region_locator).click()
         from location_search_results import LocationSearchResults
-        return LocationSearchResults(self.testsetup)
+        return LocationSearchResults(self.base_url, self.selenium)
 
     def click_profile_country_filter(self):
         self.find_element(*self._country_locator).click()
         from location_search_results import LocationSearchResults
-        return LocationSearchResults(self.testsetup)
+        return LocationSearchResults(self.base_url, self.selenium)
 
     @property
     def languages(self):

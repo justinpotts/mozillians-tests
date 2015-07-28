@@ -7,6 +7,12 @@ import requests
 
 
 @pytest.fixture
+def selenium(selenium):
+    selenium.implicitly_wait(10)
+    selenium.maximize_window()
+    return selenium
+
+@pytest.fixture
 def persona_test_user():
     return requests.get('http://personatestuser.org/email/').json()
 

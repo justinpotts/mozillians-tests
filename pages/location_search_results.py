@@ -27,7 +27,7 @@ class LocationSearchResults(Base):
 
     @property
     def search_results(self):
-        return [self.SearchResult(self.testsetup, web_element)
+        return [self.SearchResult(web_element)
                 for web_element in self.find_elements(*self._result_item_locator)]
 
     def get_random_profile(self):
@@ -41,4 +41,4 @@ class LocationSearchResults(Base):
         def open_profile_page(self):
             self.find_element(*self._profile_page_link_locator).click()
             from pages.profile import Profile
-            return Profile(self.testsetup)
+            return Profile(self.base_url, self.selenium)

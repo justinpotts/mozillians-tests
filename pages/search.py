@@ -60,27 +60,26 @@ class Search(Base):
 
     @property
     def search_results(self):
-        return [self.SearchResult(self.testsetup, web_element) for web_element in
+        return [self.SearchResult(web_element) for web_element in
                 self.selenium.find_elements(*self._result_locator)]
 
     def open_group(self, name):
         self.selenium.find_element_by_link_text(name).click()
         from pages.group_info_page import GroupInfoPage
-        return GroupInfoPage(self.testsetup)
+        return GroupInfoPage(self.base_url, self.selenium)
 
     class SearchResult(Page):
 
         _profile_page_link_locator = (By.CSS_SELECTOR, 'a')
         _name_locator = (By.CSS_SELECTOR, '.result .details h2')
 
-        def __init__(self, testsetup, root_element):
+        def __init__(self, root_element):
             self._root_element = root_element
-            Page.__init__(self, testsetup)
 
         def open_profile_page(self):
             self._root_element.find_element(*self._profile_page_link_locator).click()
             from pages.profile import Profile
-            return Profile(self.testsetup)
+            return Profile(self.base_url, self.selenium)
 
         @property
         def name(self):

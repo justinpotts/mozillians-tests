@@ -88,4 +88,4 @@ class Register(Base):
     def click_create_profile_button(self):
         self.selenium.find_element(*self._create_profile_button_locator).click()
         from pages.profile import Profile
-        return Profile(self.testsetup)
+        return Profile(self.base_url, self.selenium)

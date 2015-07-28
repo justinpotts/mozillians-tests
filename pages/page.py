@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -16,22 +14,11 @@ from selenium.common.exceptions import ElementNotVisibleException
 
 
 class Page(object):
-    """
-    Base class for all Pages.
-    """
 
-    def __init__(self, testsetup, **kwargs):
-        """
-        Constructor
-        """
-        self.testsetup = testsetup
-        self.base_url = testsetup.base_url
-        self.selenium = testsetup.selenium
-        self.timeout = testsetup.timeout
-        self._selenium_root = hasattr(self, '_root_element') and self._root_element or self.selenium
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+    def __init__(self, base_url, selenium):
+        self.base_url = base_url
+        self.selenium = selenium
+        self.timeout = 10
 
     def maximize_window(self):
         try:
@@ -62,7 +49,7 @@ class Page(object):
             return False
         finally:
             # set back to where you once belonged
-            self.selenium.implicitly_wait(self.testsetup.default_implicit_wait)
+            self.selenium.implicitly_wait(self.implicitly_wait(10).default_implicit_wait)
 
     def wait_for_element_visible(self, *locator):
         count = 0
@@ -89,7 +76,7 @@ class Page(object):
             Assert.fail(TimeoutException)
         finally:
             # set back to where you once belonged
-            self.selenium.implicitly_wait(self.testsetup.default_implicit_wait)
+            self.selenium.implicitly_wait(10)
 
     def wait_for_element_not_present(self, *locator):
         """Wait for an element to become not present."""
@@ -101,7 +88,7 @@ class Page(object):
             return False
         finally:
             # set back to where you once belonged
-            self.selenium.implicitly_wait(self.testsetup.default_implicit_wait)
+            self.selenium.implicitly_wait(10)
 
     def is_element_visible(self, *locator):
         try:
@@ -124,6 +111,5 @@ class Page(object):
 
 class PageRegion(Page):
 
-    def __init__(self, testsetup, element):
+    def __init__(self, element):
         self._root_element = element
-        Page.__init__(self, testsetup)
