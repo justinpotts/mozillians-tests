@@ -10,7 +10,8 @@ from pages.base import Base
 
 class Home(Base):
 
-    def __init__(self, open_url=True):
+    def __init__(self, base_url, selenium, open_url=True):
+        Base.__init__(self, base_url, selenium) 
         self.maximize_window()
         if open_url:
             self.selenium.get(self.base_url)
